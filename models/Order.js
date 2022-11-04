@@ -37,6 +37,12 @@ OrderSchema.pre('save', function (next) {
   next();
 });
 
+OrderSchema.statics.checkParamsId = function (id) {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new BaseError('Id is not valid', 404);
+  }
+};
+
 const Order = mongoose.model('Order', OrderSchema);
 
 module.exports = Order;
