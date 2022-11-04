@@ -28,12 +28,14 @@ app.use('/restaurant', routesRestaurant);
 app.use(logError);
 app.use(returnError);
 
-io.on('connection', socket => {
+const onConnection = socket => {
   console.log(`New connection: ${socket.id}`);
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
   });
-});
+};
+
+io.on('connection', onConnection);
 
 server.listen(port, () => {
   console.log(`Listening on port ${port}`.yellow.bold);
