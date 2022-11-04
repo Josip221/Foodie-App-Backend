@@ -22,12 +22,11 @@ const MenuSchema = mongoose.Schema({
   ],
 });
 
-MenuSchema.statics.getItemsForMenu = async function (...reqItems) {
+MenuSchema.statics.getItemsForMenu = function (...reqItems) {
   const arr = [...reqItems];
 
   const items = arr.map(async item => {
     const result = await Item.findOne({ name: item.name });
-
     return { price: item.price, item: result };
   });
 
@@ -36,7 +35,7 @@ MenuSchema.statics.getItemsForMenu = async function (...reqItems) {
   return data;
 };
 
-MenuSchema.methods.saveItemsToMenu = async function (data) {
+MenuSchema.methods.saveItemsToMenu = function (data) {
   let message = [];
   const thisIdArray = this.items.map(item => item.item.toString());
 
@@ -51,9 +50,11 @@ MenuSchema.methods.saveItemsToMenu = async function (data) {
       delete data[i];
     }
   });
+
   data.forEach(el => {
     this.items.push({ price: el.price, item: el.item._id });
   });
+
   this.save();
   return message;
 };

@@ -7,6 +7,7 @@ const {
   createRestaurant,
   getRestaurantById,
   getAllRestaraunts,
+  addMenuToRestaurant,
 } = require('../controllers/controllersRestaurant');
 
 const {
@@ -30,6 +31,8 @@ router.patch('/menu/:id', authJWT, roleAuth('admin', 'owner'), addItemToMenu);
 router.post('/menu', authJWT, roleAuth('admin', 'owner'), createMenu);
 router.get('/menu', authJWT, getAllMenus);
 router.get('/menu/:id', authJWT, getMenuById);
+
+router.patch('/:id', authJWT, roleAuth('admin', 'owner'), addMenuToRestaurant);
 
 router.post('/', authJWT, roleAuth('admin', 'owner'), createRestaurant);
 router.get('/', authJWT, getAllRestaraunts);

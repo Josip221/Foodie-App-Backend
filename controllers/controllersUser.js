@@ -4,35 +4,33 @@ const jwt = require('jsonwebtoken');
 const BaseError = require('../utills/baseError');
 const mongoose = require('mongoose');
 
+const signJWT = (_id, email) => {
+  const token = jwt.sign(
+    {
+      user_id: _id,
+      email,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '2h',
+    }
+  );
+  return token;
+};
+
 const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
-
     const oldUser = await User.findOne({ email });
-
     if (oldUser) {
       throw new BaseError('User already exists', 409);
     }
-
-    const encryptedPassword = await bcyrpt.hash(password, 10);
-
     const user = await User.create({
       name,
       email: email.toLowerCase(),
-      password: encryptedPassword,
+      password,
     });
-
-    const token = jwt.sign(
-      {
-        user_id: user._id,
-        email,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: '2h',
-      }
-    );
-
+    const token = signJWT(user._id, email);
     res.status(201).json({ user, token });
   } catch (err) {
     next(err);
@@ -42,28 +40,9 @@ const registerUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }).select('password');
-
-    if (!user) {
-      throw new BaseError('Invalid credentials', 401);
-    }
-    const cmp = await bcyrpt.compare(password, user.password);
-    if (!cmp) {
-      throw new BaseError('Invalid credentials', 401);
-    }
-
-    const token = jwt.sign(
-      {
-        user_id: user._id,
-        email,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: '2h',
-      }
-    );
-
-    res.status(200).json({ email, token });
+    const user = await User.loginUser(email, password);
+    const token = signJWT(user._id, email);
+    res.status(200).json({ user, token });
   } catch (err) {
     next(err);
   }
@@ -72,12 +51,12 @@ const loginUser = async (req, res, next) => {
 const getUserById = async (req, res, next) => {
   try {
     const params = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(params)) {
-      throw new BaseError('Item id is not valid', 404);
+    User.checkParamsId(params);
+    const user = await User.findById(params);
+    if (!user) {
+      throw new BaseError('User not found', 400);
     }
-
-    res.status(200).json({});
+    res.status(200).json({ user });
   } catch (err) {
     next(err);
   }
@@ -96,10 +75,7 @@ const deleteUserById = async (req, res, next) => {
   try {
     const params = req.params.id;
 
-    if (!mongoose.Types.ObjectId.isValid(params)) {
-      throw new BaseError('Item id is not valid', 404);
-    }
-
+    User.checkParamsId(params);
     const user = await User.findById(params);
 
     if (!user) {

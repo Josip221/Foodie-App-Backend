@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const BaseError = require('../utills/baseError');
+const Menu = require('./Menu');
 
 const RestaurantSchema = mongoose.Schema({
   name: {

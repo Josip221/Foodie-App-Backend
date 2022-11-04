@@ -14,15 +14,7 @@ const returnError = (err, req, res, next) => {
   res.status(err.statusCode || 500).json({ message: err.message });
 };
 
-const isOperationalError = err => {
-  if (err instanceof BaseError) {
-    return err.isOperational;
-  }
-  return false;
-};
-
 module.exports = {
   logError,
   returnError,
-  isOperationalError,
 };
