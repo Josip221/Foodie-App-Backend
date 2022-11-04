@@ -1,8 +1,6 @@
 const User = require('./../models/User');
-const bcyrpt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const BaseError = require('../utills/baseError');
-const mongoose = require('mongoose');
 
 const signJWT = (_id, email) => {
   const token = jwt.sign(

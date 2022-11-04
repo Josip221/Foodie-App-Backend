@@ -1,5 +1,4 @@
-const BaseError = require('../utills/baseError');
-const colors = require('colors');
+require('colors');
 
 const logError = (err, req, res, next) => {
   console.log('Error'.red, err.message);

@@ -2,7 +2,6 @@ const Restaurant = require('../models/Restaurant');
 const Menu = require('../models/Menu');
 const BaseError = require('../utills/baseError');
 const mongoose = require('mongoose');
-const { param } = require('../routes/routesRestaurant');
 
 const createRestaurant = async (req, res, next) => {
   try {
