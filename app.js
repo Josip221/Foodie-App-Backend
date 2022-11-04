@@ -1,5 +1,4 @@
 const colors = require('colors');
-const mongoose = require('mongoose');
 require('dotenv').config();
 const morgan = require('morgan');
 const express = require('express');
@@ -13,7 +12,6 @@ const db = require('./database/dbConnection');
 const { logError, returnError } = require('./middleware/error');
 
 // Router imports
-//const routerSmth = require('./routerSmth');
 const routesUser = require('./routes/routesUser');
 const routesRestaurant = require('./routes/routesRestaurant');
 
